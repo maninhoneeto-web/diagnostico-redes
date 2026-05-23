@@ -1,0 +1,6 @@
+{
+  "name": "Líder Auto Veículos",
+  "description": "Especificação Técnica e Memorial Descritivo de Infraestrutura de Rede Lógica de 50 Pontos de Categoria 6 para concessionárias de alto padrão e oficinas mecatrônicas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
