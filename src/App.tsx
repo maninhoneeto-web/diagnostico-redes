@@ -659,7 +659,7 @@ export default function App() {
                     <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                       
                       {/* Showroom */}
-                      <div className="bg-[#0c1322] p-3.5 rounded border border-slate-800 space-y-2 flex flex-col justify-between">
+                      <div className="bg-[#0c1322] p-3.5 rounded border border-slate-800 space-y-3 flex flex-col justify-between">
                         <div>
                           <span className="text-[9px] text-amber-400 font-mono uppercase font-bold tracking-wider block">Showroom</span>
                           <input 
@@ -667,9 +667,33 @@ export default function App() {
                             id="input-vlan-showroom"
                             value={showroomVlan}
                             onChange={(e) => setShowroomVlan(e.target.value)}
-                            className="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 text-slate-200 focus:text-white rounded px-2 py-1.5 font-mono text-[10px] outline-none mt-1.5 cursor-text"
+                            className="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 text-slate-200 focus:text-white rounded px-2 py-1.5 font-mono text-[10px] outline-none mt-1.5 cursor-text focus:ring-1 focus:ring-amber-500/20"
                             title="Nome da VLAN do Showroom"
                           />
+                          
+                          {/* Sector Image Control inside Active Config Panel */}
+                          <div className="relative aspect-[16/10] rounded overflow-hidden border border-slate-850 mt-2.5 bg-slate-950 group select-none">
+                            <img 
+                              src={subsystemImages.showroom || "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=600&h=350"} 
+                              alt="Showroom Preview" 
+                              className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                              referrerPolicy="no-referrer"
+                            />
+                            <button
+                              onClick={() => {
+                                setEditingSubsystemId("showroom");
+                                setCustomImageUrlInput(subsystemImages.showroom || "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=600&h=350");
+                              }}
+                              className="absolute inset-0 bg-slate-950/70 hover:bg-slate-950/85 transition flex flex-col items-center justify-center gap-1 opacity-0 group-hover:opacity-100 cursor-pointer"
+                              title="Clique para customizar a foto deste setor"
+                            >
+                              <Camera className="w-4 h-4 text-amber-400" />
+                              <span className="text-[9px] font-mono font-bold text-amber-400 uppercase tracking-wider">Alterar Foto</span>
+                            </button>
+                            <div className="absolute bottom-1 right-1 bg-slate-950/80 backdrop-blur-xs px-1.5 py-0.5 rounded text-[8px] text-slate-405 font-mono flex items-center gap-1 pointer-events-none group-hover:hidden">
+                              <Camera className="w-2.5 h-2.5 text-amber-500" /> Editar Foto
+                            </div>
+                          </div>
                         </div>
                         <div className="flex items-center justify-between pt-2 border-t border-slate-900 mt-2">
                           <span className="text-[10px] text-slate-400">Pontos:</span>
@@ -688,7 +712,7 @@ export default function App() {
                       </div>
 
                       {/* Comercial */}
-                      <div className="bg-[#0c1322] p-3.5 rounded border border-slate-800 space-y-2 flex flex-col justify-between">
+                      <div className="bg-[#0c1322] p-3.5 rounded border border-slate-800 space-y-3 flex flex-col justify-between">
                         <div>
                           <span className="text-[9px] text-amber-400 font-mono uppercase font-bold tracking-wider block">Comercial Vendas</span>
                           <input 
@@ -696,9 +720,33 @@ export default function App() {
                             id="input-vlan-sales"
                             value={salesVlan}
                             onChange={(e) => setSalesVlan(e.target.value)}
-                            className="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 text-slate-200 focus:text-white rounded px-2 py-1.5 font-mono text-[10px] outline-none mt-1.5 cursor-text"
+                            className="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 text-slate-200 focus:text-white rounded px-2 py-1.5 font-mono text-[10px] outline-none mt-1.5 cursor-text focus:ring-1 focus:ring-amber-500/20"
                             title="Nome da VLAN Comercial"
                           />
+
+                          {/* Sector Image Control inside Active Config Panel */}
+                          <div className="relative aspect-[16/10] rounded overflow-hidden border border-slate-855 mt-2.5 bg-slate-950 group select-none">
+                            <img 
+                              src={subsystemImages.sales || "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=600&h=350"} 
+                              alt="Comercial Preview" 
+                              className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                              referrerPolicy="no-referrer"
+                            />
+                            <button
+                              onClick={() => {
+                                setEditingSubsystemId("sales");
+                                setCustomImageUrlInput(subsystemImages.sales || "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=600&h=350");
+                              }}
+                              className="absolute inset-0 bg-slate-950/70 hover:bg-slate-950/85 transition flex flex-col items-center justify-center gap-1 opacity-0 group-hover:opacity-100 cursor-pointer"
+                              title="Clique para customizar a foto deste setor"
+                            >
+                              <Camera className="w-4 h-4 text-amber-400" />
+                              <span className="text-[9px] font-mono font-bold text-amber-400 uppercase tracking-wider">Alterar Foto</span>
+                            </button>
+                            <div className="absolute bottom-1 right-1 bg-slate-950/80 backdrop-blur-xs px-1.5 py-0.5 rounded text-[8px] text-slate-405 font-mono flex items-center gap-1 pointer-events-none group-hover:hidden">
+                              <Camera className="w-2.5 h-2.5 text-amber-500" /> Editar Foto
+                            </div>
+                          </div>
                         </div>
                         <div className="flex items-center justify-between pt-2 border-t border-slate-900 mt-2">
                           <span className="text-[10px] text-slate-400">Pontos:</span>
@@ -717,7 +765,7 @@ export default function App() {
                       </div>
 
                       {/* Financeiro */}
-                      <div className="bg-[#0c1322] p-3.5 rounded border border-slate-800 space-y-2 flex flex-col justify-between">
+                      <div className="bg-[#0c1322] p-3.5 rounded border border-slate-800 space-y-3 flex flex-col justify-between">
                         <div>
                           <span className="text-[9px] text-amber-400 font-mono uppercase font-bold tracking-wider block">Financeiro F&I</span>
                           <input 
@@ -725,9 +773,33 @@ export default function App() {
                             id="input-vlan-finance"
                             value={financeVlan}
                             onChange={(e) => setFinanceVlan(e.target.value)}
-                            className="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 text-slate-200 focus:text-white rounded px-2 py-1.5 font-mono text-[10px] outline-none mt-1.5 cursor-text"
+                            className="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 text-slate-200 focus:text-white rounded px-2 py-1.5 font-mono text-[10px] outline-none mt-1.5 cursor-text focus:ring-1 focus:ring-amber-500/20"
                             title="Nome da VLAN do Financeiro"
                           />
+
+                          {/* Sector Image Control inside Active Config Panel */}
+                          <div className="relative aspect-[16/10] rounded overflow-hidden border border-slate-855 mt-2.5 bg-slate-950 group select-none">
+                            <img 
+                              src={subsystemImages.finance || "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=600&h=350"} 
+                              alt="Financeiro Preview" 
+                              className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                              referrerPolicy="no-referrer"
+                            />
+                            <button
+                              onClick={() => {
+                                setEditingSubsystemId("finance");
+                                setCustomImageUrlInput(subsystemImages.finance || "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=600&h=350");
+                              }}
+                              className="absolute inset-0 bg-slate-950/70 hover:bg-slate-950/85 transition flex flex-col items-center justify-center gap-1 opacity-0 group-hover:opacity-100 cursor-pointer"
+                              title="Clique para customizar a foto deste setor"
+                            >
+                              <Camera className="w-4 h-4 text-amber-400" />
+                              <span className="text-[9px] font-mono font-bold text-amber-400 uppercase tracking-wider">Alterar Foto</span>
+                            </button>
+                            <div className="absolute bottom-1 right-1 bg-slate-950/80 backdrop-blur-xs px-1.5 py-0.5 rounded text-[8px] text-slate-405 font-mono flex items-center gap-1 pointer-events-none group-hover:hidden">
+                              <Camera className="w-2.5 h-2.5 text-amber-500" /> Editar Foto
+                            </div>
+                          </div>
                         </div>
                         <div className="flex items-center justify-between pt-2 border-t border-slate-900 mt-2">
                           <span className="text-[10px] text-slate-400">Pontos:</span>
@@ -746,7 +818,7 @@ export default function App() {
                       </div>
 
                       {/* Oficina */}
-                      <div className="bg-[#0c1322] p-3.5 rounded border border-slate-800 space-y-2 flex flex-col justify-between">
+                      <div className="bg-[#0c1322] p-3.5 rounded border border-slate-800 space-y-3 flex flex-col justify-between">
                         <div>
                           <span className="text-[9px] text-amber-400 font-mono uppercase font-bold tracking-wider block">Oficina OBD</span>
                           <input 
@@ -754,9 +826,33 @@ export default function App() {
                             id="input-vlan-workshop"
                             value={workshopVlan}
                             onChange={(e) => setWorkshopVlan(e.target.value)}
-                            className="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 text-slate-200 focus:text-white rounded px-2 py-1.5 font-mono text-[10px] outline-none mt-1.5 cursor-text"
+                            className="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 text-slate-200 focus:text-white rounded px-2 py-1.5 font-mono text-[10px] outline-none mt-1.5 cursor-text focus:ring-1 focus:ring-amber-500/20"
                             title="Nome da VLAN da Oficina"
                           />
+
+                          {/* Sector Image Control inside Active Config Panel */}
+                          <div className="relative aspect-[16/10] rounded overflow-hidden border border-slate-855 mt-2.5 bg-slate-950 group select-none">
+                            <img 
+                              src={subsystemImages.workshop || "https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&q=80&w=600&h=350"} 
+                              alt="Oficina Preview" 
+                              className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                              referrerPolicy="no-referrer"
+                            />
+                            <button
+                              onClick={() => {
+                                setEditingSubsystemId("workshop");
+                                setCustomImageUrlInput(subsystemImages.workshop || "https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&q=80&w=600&h=350");
+                              }}
+                              className="absolute inset-0 bg-slate-950/70 hover:bg-slate-950/85 transition flex flex-col items-center justify-center gap-1 opacity-0 group-hover:opacity-100 cursor-pointer"
+                              title="Clique para customizar a foto deste setor"
+                            >
+                              <Camera className="w-4 h-4 text-amber-400" />
+                              <span className="text-[9px] font-mono font-bold text-amber-400 uppercase tracking-wider">Alterar Foto</span>
+                            </button>
+                            <div className="absolute bottom-1 right-1 bg-slate-950/80 backdrop-blur-xs px-1.5 py-0.5 rounded text-[8px] text-slate-405 font-mono flex items-center gap-1 pointer-events-none group-hover:hidden">
+                              <Camera className="w-2.5 h-2.5 text-amber-500" /> Editar Foto
+                            </div>
+                          </div>
                         </div>
                         <div className="flex items-center justify-between pt-2 border-t border-slate-900 mt-2">
                           <span className="text-[10px] text-slate-400">Pontos:</span>
@@ -775,7 +871,7 @@ export default function App() {
                       </div>
 
                       {/* Admin */}
-                      <div className="bg-[#0c1322] p-3.5 rounded border border-slate-800 space-y-2 flex flex-col justify-between">
+                      <div className="bg-[#0c1322] p-3.5 rounded border border-slate-800 space-y-3 flex flex-col justify-between">
                         <div>
                           <span className="text-[9px] text-amber-400 font-mono uppercase font-bold tracking-wider block">Administrativo</span>
                           <input 
@@ -783,9 +879,33 @@ export default function App() {
                             id="input-vlan-admin"
                             value={adminVlan}
                             onChange={(e) => setAdminVlan(e.target.value)}
-                            className="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 text-slate-200 focus:text-white rounded px-2 py-1.5 font-mono text-[10px] outline-none mt-1.5 cursor-text"
+                            className="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 text-slate-200 focus:text-white rounded px-2 py-1.5 font-mono text-[10px] outline-none mt-1.5 cursor-text focus:ring-1 focus:ring-amber-500/20"
                             title="Nome da VLAN Administrativa"
                           />
+
+                          {/* Sector Image Control inside Active Config Panel */}
+                          <div className="relative aspect-[16/10] rounded overflow-hidden border border-slate-855 mt-2.5 bg-slate-950 group select-none">
+                            <img 
+                              src={subsystemImages.admin || "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=600&h=350"} 
+                              alt="Administrativo Preview" 
+                              className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                              referrerPolicy="no-referrer"
+                            />
+                            <button
+                              onClick={() => {
+                                setEditingSubsystemId("admin");
+                                setCustomImageUrlInput(subsystemImages.admin || "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=600&h=350");
+                              }}
+                              className="absolute inset-0 bg-slate-950/70 hover:bg-slate-950/85 transition flex flex-col items-center justify-center gap-1 opacity-0 group-hover:opacity-100 cursor-pointer"
+                              title="Clique para customizar a foto deste setor"
+                            >
+                              <Camera className="w-4 h-4 text-amber-400" />
+                              <span className="text-[9px] font-mono font-bold text-amber-400 uppercase tracking-wider">Alterar Foto</span>
+                            </button>
+                            <div className="absolute bottom-1 right-1 bg-slate-950/80 backdrop-blur-xs px-1.5 py-0.5 rounded text-[8px] text-slate-455 font-mono flex items-center gap-1 pointer-events-none group-hover:hidden">
+                              <Camera className="w-2.5 h-2.5 text-amber-500" /> Editar Foto
+                            </div>
+                          </div>
                         </div>
                         <div className="flex items-center justify-between pt-2 border-t border-slate-900 mt-2">
                           <span className="text-[10px] text-slate-400">Pontos:</span>
@@ -1568,7 +1688,7 @@ export default function App() {
                           referrerPolicy="no-referrer"
                           className="w-full h-full object-cover transform group-hover:scale-105 transition duration-155"
                         />
-                        <div className={`absolute inset-0 flex items-center justify-center ${isSelected ? 'bg-amber-500/10' : 'bg-slate-950/20'}`}>
+                        <div className={`absolute inset-0 flex items-center justify-center ${isSelected ? 'bg-amber-500/15' : 'bg-slate-950/20'}`}>
                           {isSelected && (
                             <div className="bg-amber-500 text-slate-950 p-0.5 rounded-full shadow">
                               <Check className="w-3 h-3 stroke-[3]" />
@@ -1582,25 +1702,15 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Manual File Upload Slot (Drag & Drop) */}
-              <div className="space-y-2">
+              {/* Manual File Upload Slot (Direct HTML5) */}
+              <div className="space-y-2.5">
                 <span className="text-[10px] text-amber-450 font-mono font-bold uppercase tracking-wider flex items-center gap-1">
-                  <Upload className="w-3.5 h-3.5" /> Opção 2: Carregar Foto Própria
+                  <Upload className="w-3.5 h-3.5" /> Opção 2: Carregar Foto Própria do Computador
                 </span>
-                <div 
-                  onDragEnter={handleDrag}
-                  onDragLeave={handleDrag}
-                  onDragOver={handleDrag}
-                  onDrop={handleDrop}
-                  className={`border-2 border-dashed rounded-lg p-5 text-center flex flex-col items-center justify-center transition cursor-pointer relative ${
-                    dragActive 
-                      ? 'border-amber-500 bg-amber-500/5' 
-                      : 'border-slate-800 hover:border-slate-700 bg-slate-950/50 hover:bg-slate-950/80'
-                  }`}
-                >
+                <div className="bg-slate-950 p-4 border border-slate-800 rounded-lg space-y-2">
                   <input 
                     type="file" 
-                    id="file-image-upload" 
+                    id="file-image-upload-direct" 
                     accept="image/*"
                     onChange={(e) => {
                       const file = e.target.files?.[0];
@@ -1609,41 +1719,35 @@ export default function App() {
                         reader.onloadend = () => {
                           if (typeof reader.result === "string") {
                             handleUpdateImage(editingSubsystemId, reader.result);
+                            setCustomImageUrlInput(reader.result);
                           }
                         };
                         reader.readAsDataURL(file);
                       }
                     }}
-                    className="hidden" 
+                    className="w-full text-xs text-slate-300 bg-slate-900 rounded p-1.5 border border-slate-850 cursor-pointer text-center file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-600 file:cursor-pointer" 
                   />
-                  <label htmlFor="file-image-upload" className="cursor-pointer inset-0 absolute" />
-                  <Upload className="w-6 h-6 text-slate-400 mb-2 pointer-events-none" />
-                  <p className="text-xs text-slate-200 font-mono pointer-events-none">Arraste a foto do seu dispositivo aqui ou <span className="text-amber-400 font-bold underline">Clique para procurar</span></p>
-                  <p className="text-[10px] text-slate-500 pointer-events-none mt-1">PNG, JPG, WEBP • Base64 Real-Time Local</p>
+                  <p className="text-[9px] text-slate-500 font-mono text-center">Formatos aceitos: PNG, JPG, JPEG, WEBP. Convertido na hora para Base64 local.</p>
                 </div>
               </div>
 
               {/* Custom URL Input */}
               <div className="space-y-2">
                 <span className="text-[10px] text-slate-400 font-mono font-bold uppercase tracking-wider block">Opção 3: Inserir Link de Imagem Externa</span>
-                <div className="flex gap-2">
+                <div className="bg-slate-950 p-3.5 border border-slate-800 rounded-lg space-y-2">
                   <input
                     type="text"
                     value={customImageUrlInput}
-                    onChange={(e) => setCustomImageUrlInput(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 text-slate-200 rounded px-2.5 py-1.5 font-mono text-xs outline-none cursor-text"
-                    placeholder="Cole seu link de imagem pública (ex: https://...)"
-                  />
-                  <button
-                    onClick={() => {
-                      if (customImageUrlInput) {
-                        handleUpdateImage(editingSubsystemId, customImageUrlInput);
+                    onChange={(e) => {
+                      setCustomImageUrlInput(e.target.value);
+                      if (e.target.value) {
+                        handleUpdateImage(editingSubsystemId, e.target.value);
                       }
                     }}
-                    className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold font-mono px-3.5 rounded text-xs transition shrink-0 cursor-pointer"
-                  >
-                    Aplicar
-                  </button>
+                    className="w-full bg-slate-900 border border-slate-800 focus:border-amber-500 text-slate-200 rounded px-2.5 py-1.5 font-mono text-xs outline-none cursor-text focus:ring-1 focus:ring-amber-500/20"
+                    placeholder="Cole seu link de imagem pública (ex: https://...)"
+                  />
+                  <p className="text-[9px] text-slate-500 font-mono">A foto se altera automaticamente ao digitar ou colar o endereço correto.</p>
                 </div>
               </div>
 
