@@ -22,7 +22,14 @@ import {
   Building2,
   FileSpreadsheet,
   Settings,
-  HelpCircle
+  HelpCircle,
+  Camera,
+  Upload,
+  X,
+  Image as ImageIcon,
+  FileText,
+  Copy,
+  ExternalLink
 } from "lucide-react";
 
 export default function App() {
@@ -30,6 +37,92 @@ export default function App() {
   const [dealershipName, setDealershipName] = useState("Líder Auto Veículos");
   const [representativeName, setRepresentativeName] = useState("Líder Auto Veículos - Direção Executiva");
   const [analystName, setAnalystName] = useState("TI Corporativa & Redes Estruturadas");
+
+  // Photos for each subsystem mapped by ID
+  const [subsystemImages, setSubsystemImages] = useState<Record<string, string>>(() => {
+    try {
+      const stored = localStorage.getItem("subsystem_images");
+      if (stored) {
+        return JSON.parse(stored);
+      }
+    } catch (e) {}
+    
+    return {
+      showroom: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=600&h=350",
+      sales: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=600&h=350",
+      finance: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=600&h=350",
+      workshop: "https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&q=80&w=600&h=350",
+      admin: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=600&h=350"
+    };
+  });
+
+  const [editingSubsystemId, setEditingSubsystemId] = useState<string | null>(null);
+  const [showPrintModal, setShowPrintModal] = useState(false);
+  const [copiedLinkSuccess, setCopiedLinkSuccess] = useState(false);
+  const [customImageUrlInput, setCustomImageUrlInput] = useState("");
+  const [dragActive, setDragActive] = useState(false);
+
+  const handleUpdateImage = (id: string, url: string) => {
+    const updated = { ...subsystemImages, [id]: url };
+    setSubsystemImages(updated);
+    try {
+      localStorage.setItem("subsystem_images", JSON.stringify(updated));
+    } catch (e) {}
+  };
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file && editingSubsystemId) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === "string") {
+          handleUpdateImage(editingSubsystemId, reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const presetPhotos: Record<string, { label: string; url: string }[]> = {
+    showroom: [
+      { label: "Showroom Premium Luxo", url: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=600&h=350" },
+      { label: "Showroom Moderno Clean", url: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&q=80&w=600&h=350" },
+      { label: "Showroom Esportivo Noturno", url: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=600&h=350" }
+    ],
+    sales: [
+      { label: "Mesa de Vendas Executiva", url: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=600&h=350" },
+      { label: "Consultor de Vendas & Cliente", url: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=600&h=350" },
+      { label: "Escritório Comercial Aberto", url: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=600&h=350" }
+    ],
+    finance: [
+      { label: "Segurança e Assinatura", url: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=600&h=350" },
+      { label: "Foco Analítico de Crédito", url: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=600&h=350" },
+      { label: "Gerenciamento de Ativos", url: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=600&h=350" }
+    ],
+    workshop: [
+      { label: "Diagnóstico Mecatrônico", url: "https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&q=80&w=600&h=350" },
+      { label: "Oficina de Alta Tecnologia", url: "https://images.unsplash.com/photo-1616788494707-ec28f08d05a1?auto=format&fit=crop&q=80&w=600&h=350" },
+      { label: "Verificação sob Elevador", url: "https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?auto=format&fit=crop&q=80&w=600&h=350" }
+    ],
+    admin: [
+      { label: "Infraestrutura Rack & Servidor", url: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=600&h=350" },
+      { label: "Sala de Servidores TI", url: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=600&h=350" },
+      { label: "Gabinete Gerência Geral", url: "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80&w=600&h=350" }
+    ]
+  };
   
   // Equipment selection states
   const [firewallModel, setFirewallModel] = useState("Firewall FortiGate Criptografado");
@@ -358,7 +451,7 @@ export default function App() {
             </div>
             
             <button 
-              onClick={() => window.print()}
+              onClick={() => setShowPrintModal(true)}
               className="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold py-2.5 px-4 rounded text-xs transition duration-150 border border-amber-450 shadow-lg shadow-amber-500/10 cursor-pointer"
               id="btn-print"
             >
@@ -1094,17 +1187,44 @@ export default function App() {
                 {/* Subsystem core technical arguments */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                   
+                  {/* Photo Component for Subsystem */}
+                  <div className="lg:col-span-3 space-y-2">
+                    <h4 className="text-[10px] text-amber-500 font-mono font-bold uppercase tracking-wider">Foto de Referência do Setor:</h4>
+                    <div className="relative aspect-video lg:aspect-[4/3] rounded overflow-hidden border border-slate-800 shadow-md group/img select-none bg-slate-950">
+                      <img 
+                        src={subsystemImages[sub.id] || "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=600&h=350"} 
+                        alt={sub.name} 
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover group-hover/img:scale-105 transition duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-60 group-hover/img:opacity-40 transition-opacity"></div>
+                      
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditingSubsystemId(sub.id);
+                          setCustomImageUrlInput(subsystemImages[sub.id] || "");
+                        }}
+                        className="absolute bottom-2.5 right-2.5 flex items-center gap-1.5 bg-slate-950/90 hover:bg-amber-500 hover:text-slate-950 text-amber-400 font-bold px-2 py-1 rounded text-[10px] font-mono border border-amber-500/20 hover:border-transparent cursor-pointer backdrop-blur-xs shadow transition duration-150 active:scale-95 text-[9px] uppercase tracking-wider"
+                        title="Clique para carregar ou mudar a foto deste setor"
+                      >
+                        <Camera className="w-3 h-3 text-amber-500 group-hover/img:text-slate-950 cursor-pointer" />
+                        Alterar Foto
+                      </button>
+                    </div>
+                  </div>
+
                   {/* Electro-physical rationale */}
-                  <div className="lg:col-span-5 bg-slate-950 p-4 rounded border border-slate-900 space-y-2">
-                    <h4 className="text-[10px] text-amber-400 font-mono font-bold uppercase tracking-wider">A Razão Física da Conectividade Metálica:</h4>
+                  <div className="lg:col-span-3 bg-slate-950 p-4 rounded border border-slate-900 space-y-2 min-h-[160px]">
+                    <h4 className="text-[10px] text-amber-400 font-mono font-bold uppercase tracking-wider">A Razão Física da Rede Cabeada:</h4>
                     <p className="text-xs text-slate-300 leading-relaxed font-normal">
                       {sub.whyWired}
                     </p>
                   </div>
 
                   {/* Operational vulnerability */}
-                  <div className="lg:col-span-4 bg-[#140b0b] p-4 rounded border border-red-950/40 space-y-2">
-                    <h4 className="text-[10px] text-red-400 font-mono font-bold uppercase tracking-wider">Prejuízo por Instabilidade de Sistema Comum:</h4>
+                  <div className="lg:col-span-3 bg-[#140b0b] p-4 rounded border border-red-950/40 space-y-2 min-h-[160px]">
+                    <h4 className="text-[10px] text-red-400 font-mono font-bold uppercase tracking-wider">Prejuízo por Instabilidade de Wi-Fi:</h4>
                     <p className="text-xs text-slate-300 leading-relaxed font-normal">
                       {sub.operationalImpact}
                     </p>
@@ -1112,12 +1232,12 @@ export default function App() {
 
                   {/* Device outputs list */}
                   <div className="lg:col-span-3 space-y-2">
-                    <h4 className="text-[10px] text-sky-400 font-mono font-bold uppercase tracking-wider">Hardware Conectados por Posto:</h4>
+                    <h4 className="text-[10px] text-sky-400 font-mono font-bold uppercase tracking-wider font-bold">Hardware Integrado ao Canal:</h4>
                     <div className="space-y-1.5">
                       {sub.applications.map((app, appIdx) => (
-                        <div key={appIdx} className="bg-slate-900 border border-slate-850 p-2.5 rounded text-[11px] text-slate-200 flex items-center gap-2">
-                          <div className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></div>
-                          <span className="font-medium truncate" title={app}>{app}</span>
+                        <div key={appIdx} className="bg-slate-900/60 border border-slate-850 p-2.5 rounded text-[11px] text-slate-200 flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 bg-sky-400 rounded-full shrink-0"></span>
+                          <span className="font-semibold truncate text-[10.5px]" title={app}>{app}</span>
                         </div>
                       ))}
                     </div>
@@ -1380,6 +1500,318 @@ export default function App() {
           </p>
         </div>
       </footer>
+
+      {/* MODAL 1: EDIT SECTOR IMAGE */}
+      {editingSubsystemId && (
+        <div className="fixed inset-0 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-[fadeIn_0.15s_ease-out] print:hidden">
+          <div className="bg-[#0b1220] border border-slate-800 rounded-lg max-w-lg w-full overflow-hidden shadow-2xl animate-[scaleIn_0.15s_ease-out]">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 border-b border-slate-850 bg-slate-900/60">
+              <div className="flex items-center gap-2">
+                <Camera className="w-4 h-4 text-amber-400" />
+                <h3 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+                  Customizar Imagem do Setor
+                </h3>
+              </div>
+              <button 
+                onClick={() => setEditingSubsystemId(null)}
+                className="text-slate-400 hover:text-white transition cursor-pointer p-1 rounded hover:bg-slate-800"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-5 space-y-6">
+              
+              {/* Current Preview */}
+              <div className="space-y-1.5">
+                <span className="text-[10px] text-slate-400 font-mono font-bold uppercase tracking-wider block">Visualização Atual:</span>
+                <div className="aspect-video relative rounded overflow-hidden border border-slate-800 bg-slate-950 shadow-inner">
+                  <img 
+                    src={subsystemImages[editingSubsystemId] || ""} 
+                    alt="Preview" 
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 bg-slate-950/70 backdrop-blur-xs p-2 text-center border-t border-slate-900">
+                    <span className="text-[10px] text-slate-300 font-bold font-mono">
+                      Setor: {subsystems.find(s => s.id === editingSubsystemId)?.name?.split("(")[0]}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Presets Grid */}
+              <div className="space-y-2.5">
+                <span className="text-[10px] text-amber-400 font-mono font-bold uppercase tracking-wider flex items-center gap-1">
+                  <ImageIcon className="w-3.5 h-3.5" /> Opção 1: Escolher Imagem Temática Selecionada
+                </span>
+                <div className="grid grid-cols-3 gap-2">
+                  {presetPhotos[editingSubsystemId]?.map((photo, pIdx) => {
+                    const isSelected = subsystemImages[editingSubsystemId] === photo.url;
+                    return (
+                      <button
+                        key={pIdx}
+                        onClick={() => {
+                          handleUpdateImage(editingSubsystemId, photo.url);
+                          setCustomImageUrlInput(photo.url);
+                        }}
+                        className={`relative aspect-video rounded overflow-hidden border transition text-left cursor-pointer group ${
+                          isSelected ? 'border-amber-500 ring-2 ring-amber-500/20' : 'border-slate-800 hover:border-slate-600'
+                        }`}
+                        title={photo.label}
+                      >
+                        <img 
+                          src={photo.url} 
+                          alt={photo.label} 
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-cover transform group-hover:scale-105 transition duration-155"
+                        />
+                        <div className={`absolute inset-0 flex items-center justify-center ${isSelected ? 'bg-amber-500/10' : 'bg-slate-950/20'}`}>
+                          {isSelected && (
+                            <div className="bg-amber-500 text-slate-950 p-0.5 rounded-full shadow">
+                              <Check className="w-3 h-3 stroke-[3]" />
+                            </div>
+                          )}
+                        </div>
+                        <span className="absolute bottom-1 left-1 right-1 text-[8px] bg-slate-950/85 text-white truncate px-1 rounded block pointer-events-none font-bold text-center">{photo.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Manual File Upload Slot (Drag & Drop) */}
+              <div className="space-y-2">
+                <span className="text-[10px] text-amber-450 font-mono font-bold uppercase tracking-wider flex items-center gap-1">
+                  <Upload className="w-3.5 h-3.5" /> Opção 2: Carregar Foto Própria
+                </span>
+                <div 
+                  onDragEnter={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDragOver={handleDrag}
+                  onDrop={handleDrop}
+                  className={`border-2 border-dashed rounded-lg p-5 text-center flex flex-col items-center justify-center transition cursor-pointer relative ${
+                    dragActive 
+                      ? 'border-amber-500 bg-amber-500/5' 
+                      : 'border-slate-800 hover:border-slate-700 bg-slate-950/50 hover:bg-slate-950/80'
+                  }`}
+                >
+                  <input 
+                    type="file" 
+                    id="file-image-upload" 
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          if (typeof reader.result === "string") {
+                            handleUpdateImage(editingSubsystemId, reader.result);
+                          }
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                    className="hidden" 
+                  />
+                  <label htmlFor="file-image-upload" className="cursor-pointer inset-0 absolute" />
+                  <Upload className="w-6 h-6 text-slate-400 mb-2 pointer-events-none" />
+                  <p className="text-xs text-slate-200 font-mono pointer-events-none">Arraste a foto do seu dispositivo aqui ou <span className="text-amber-400 font-bold underline">Clique para procurar</span></p>
+                  <p className="text-[10px] text-slate-500 pointer-events-none mt-1">PNG, JPG, WEBP • Base64 Real-Time Local</p>
+                </div>
+              </div>
+
+              {/* Custom URL Input */}
+              <div className="space-y-2">
+                <span className="text-[10px] text-slate-400 font-mono font-bold uppercase tracking-wider block">Opção 3: Inserir Link de Imagem Externa</span>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={customImageUrlInput}
+                    onChange={(e) => setCustomImageUrlInput(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-800 focus:border-amber-500 text-slate-200 rounded px-2.5 py-1.5 font-mono text-xs outline-none cursor-text"
+                    placeholder="Cole seu link de imagem pública (ex: https://...)"
+                  />
+                  <button
+                    onClick={() => {
+                      if (customImageUrlInput) {
+                        handleUpdateImage(editingSubsystemId, customImageUrlInput);
+                      }
+                    }}
+                    className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold font-mono px-3.5 rounded text-xs transition shrink-0 cursor-pointer"
+                  >
+                    Aplicar
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex items-center justify-end p-4 border-t border-slate-850 bg-slate-900/40 gap-2">
+              <button
+                onClick={() => {
+                  const baseDefaults: Record<string, string> = {
+                    showroom: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=600&h=350",
+                    sales: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=600&h=350",
+                    finance: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=600&h=350",
+                    workshop: "https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&q=80&w=600&h=350",
+                    admin: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=600&h=350"
+                  };
+                  handleUpdateImage(editingSubsystemId, baseDefaults[editingSubsystemId]);
+                  setCustomImageUrlInput(baseDefaults[editingSubsystemId]);
+                }}
+                className="mr-auto text-[10px] text-rose-455 hover:text-rose-400 font-mono uppercase bg-rose-950/10 hover:bg-rose-950/30 border border-rose-950/40 px-2.5 py-1.5 rounded cursor-pointer transition duration-150 font-bold"
+              >
+                Voltar ao Padrão
+              </button>
+              <button
+                onClick={() => setEditingSubsystemId(null)}
+                className="bg-slate-800 hover:bg-slate-700 text-white font-mono px-4 py-1.5 rounded text-xs transition cursor-pointer border border-slate-700 font-bold"
+              >
+                Salvar Alterações
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 2: PERFECT PDF / NO WATERMARK PRINT SETUP */}
+      {showPrintModal && (
+        <div className="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-[fadeIn_0.15s_ease-out] print:hidden">
+          <div className="bg-[#0b1220] border border-amber-500/30 rounded-lg max-w-2xl w-full overflow-hidden shadow-2xl animate-[scaleIn_0.15s_ease-out]">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 border-b border-slate-850 bg-slate-900">
+              <div className="flex items-center gap-2">
+                <Printer className="w-5 h-5 text-amber-500" />
+                <h3 className="text-xs sm:text-sm font-bold text-white uppercase tracking-wider font-mono">
+                  Como Salvar PDF sem Barras e sem Marcas do AI Studio
+                </h3>
+              </div>
+              <button 
+                onClick={() => setShowPrintModal(false)}
+                className="text-slate-400 hover:text-white transition cursor-pointer p-1 rounded hover:bg-slate-800"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 space-y-5">
+              
+              <p className="text-xs text-slate-300 leading-relaxed font-normal">
+                Como você está visualizando esta plataforma dentro do editor de desenvolvimento do Google AI Studio, a moldura do editor e marcas fluídas do iframe podem sair no PDF se você imprimir essa janela. Siga esses <strong className="text-amber-400 text-white font-bold">3 pequenos passos rápidos</strong> para exportar um Memorial Técnico limpo e puramente corporativo:
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Step 1 */}
+                <div className="bg-slate-950 p-4 border border-slate-850 rounded flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 block w-fit">PASSO 01</span>
+                    <h4 className="text-xs font-bold text-white uppercase font-mono tracking-wide">Abrir em Nova Aba</h4>
+                    <p className="text-[10.5px] text-slate-400 leading-normal">
+                      Clique no botão para abrir este portal em tela inteira, removendo a barra de IA e a moldura lateral.
+                    </p>
+                  </div>
+                  <button 
+                    onClick={() => {
+                      if (typeof window !== "undefined") {
+                        window.open(window.location.href, "_blank");
+                      }
+                    }}
+                    className="flex items-center justify-center gap-1.5 mt-3.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-2.5 py-1.5 rounded text-[10px] font-mono cursor-pointer transition shadow duration-150 w-full"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    Abrir Nova Aba
+                  </button>
+                </div>
+
+                {/* Step 2 */}
+                <div className="bg-slate-950 p-4 border border-slate-850 rounded flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded bg-sky-500/10 text-sky-450 block w-fit">PASSO 02</span>
+                    <h4 className="text-xs font-bold text-white uppercase font-mono tracking-wide">Remover Links</h4>
+                    <p className="text-[10.5px] text-slate-400 leading-normal">
+                      No painel de impressão (Ctrl+P / Command+P), desmarque a caixa <strong className="text-white font-semibold">"Cabeçalhos e rodapés"</strong>. Isso esconde as URLs do navegador!
+                    </p>
+                  </div>
+                  <div className="text-[9px] text-[#8c9cb5] font-mono border-t border-slate-900 mt-2 pt-2 text-center">
+                    Bordas 105% limpas
+                  </div>
+                </div>
+
+                {/* Step 3 */}
+                <div className="bg-slate-950 p-4 border border-slate-850 rounded flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 block w-fit">PASSO 03</span>
+                    <h4 className="text-xs font-bold text-white uppercase font-mono tracking-wide">Imprimir Fundos</h4>
+                    <p className="text-[10.5px] text-slate-400 leading-normal">
+                      Marque a caixa <strong className="text-white font-semibold">"Gráficos de segundo plano"</strong> para que todas as cores escuras, bordas douradas e fotos sejam impressas.
+                    </p>
+                  </div>
+                  <div className="text-[9px] text-[#8c9cb5] font-mono border-t border-slate-900 mt-2 pt-2 text-center">
+                    Cores e contrastes reais
+                  </div>
+                </div>
+              </div>
+
+              {/* URL fallback row */}
+              <div className="bg-slate-950 p-3 rounded border border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-slate-400" />
+                  <span className="text-slate-300">Link direto do app caso seu pop-up bloqueie:</span>
+                </div>
+                <div className="flex gap-2 w-full sm:w-auto">
+                  <input 
+                    type="text" 
+                    readOnly 
+                    value={typeof window !== "undefined" ? window.location.href : "https://ais-pre-fsvi4fdxo5g3sl6b3yszcb-239587108071.us-west1.run.app"} 
+                    className="bg-slate-900 border border-slate-850 text-[10px] font-mono px-2 py-1 text-slate-400 rounded w-full sm:w-48 select-all focus:ring-0 outline-none"
+                  />
+                  <button
+                    onClick={() => {
+                      if (typeof window !== "undefined") {
+                        navigator.clipboard.writeText(window.location.href);
+                        setCopiedLinkSuccess(true);
+                        setTimeout(() => setCopiedLinkSuccess(false), 2000);
+                      }
+                    }}
+                    className="bg-slate-900 hover:bg-slate-800 text-amber-400 font-mono border border-slate-800 hover:border-amber-500/30 px-3 py-1 rounded text-[10px] shrink-0 font-bold flex items-center gap-1 cursor-pointer transition active:scale-95"
+                  >
+                    <Copy className="w-3 h-3" />
+                    {copiedLinkSuccess ? "Copiado!" : "Copiar"}
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex items-center justify-end p-4 border-t border-slate-850 bg-slate-900/60 gap-2">
+              <button
+                onClick={() => setShowPrintModal(false)}
+                className="bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono px-4 py-2 rounded text-xs transition border border-slate-755 cursor-pointer font-bold"
+              >
+                Voltar e Ajustar Dados
+              </button>
+              <button
+                onClick={() => {
+                  setShowPrintModal(false);
+                  setTimeout(() => {
+                    window.print();
+                  }, 300);
+                }}
+                className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold font-mono px-5 py-2 rounded text-xs transition shadow cursor-pointer flex items-center gap-1.5 active:scale-95"
+              >
+                <Printer className="w-4 h-4 text-slate-950" />
+                Imprimir / Salvar PDF
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
